@@ -1,6 +1,8 @@
 import spotipy
 import spotipy.oauth2 as oauth2
 import argparse
+import os
+import multiprocessing
 
 
 def get_args():
@@ -42,6 +44,11 @@ def get_track_names(S, username, playlist_id):
     return song_names
 
 
+def download_song(song):
+    command = 'youtube-dl -x --audio-format mp3 -o "~/Desktop/Summer Tunes 2020/%(title)s.%(ext)s" "ytsearch1:{} - {}"'.format(song[0], song[1])
+    os.system(command)
+
+
 if __name__ == '__main__':
     args = get_args()
     token = generate_token(args.id, args.secret)
@@ -50,14 +57,11 @@ if __name__ == '__main__':
 
     songs = None
     if args.c is True:
-        songs = get_track_names(spotify, args.username, args.playlist)
+        songs = get_track_names(spotify, args.username, args.playlist_uri)
     else:
         username = input('Spotify Username')
         playlist_uri = input('Spotify playlist URI')
         songs = get_track_names(spotify, username, playlist_uri)
 
-    print(songs)
-
-
-
-
+    pool = multiprocessing.Pool(5)
+    pool.map(download_song, songs)
