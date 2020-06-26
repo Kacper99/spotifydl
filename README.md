@@ -9,7 +9,7 @@ and [ffmpeg](https://www.ffmpeg.org). On MacOS these can be easily installed usi
 Make sure you install all the required packages from the requirements.txt which can be 
 done using the `pip install -r requirements.txt`
 
-You *need* to create an app on the Spotify developer [website](https://developer.spotify.com/dashboard/applications) 
+You **need** to create an app on the Spotify developer [website](https://developer.spotify.com/dashboard/applications) 
 to obtain a client ID and a client secret which have to be passed in through command
 line arguments. Once you obtain these run the downloader with the command
 `python3 spotifydl.py --id 00000000000 --secret 0000000000` (replace with your
