@@ -21,7 +21,7 @@ passed in through the command line:
 `--id 00000 --secret 000000 -c --username user --playlist_uri "spotify:playlist:xxxxxxxxxxxxxx" --dir "~/desination-dir"`
 
 ## Command line arguments
-```bash
+```
 usage: Download your spotify playlist through youtubedl [-h] [--id ID]
                                                         [--secret SECRET] [-c]
                                                         [--username USERNAME]
