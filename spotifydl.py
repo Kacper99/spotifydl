@@ -3,16 +3,22 @@ import spotipy.oauth2 as oauth2
 import argparse
 import os
 import multiprocessing
+from downloader import Downloader
+from itertools import product
+
+
+save_dir = '/'
 
 
 def get_args():
     parser = argparse.ArgumentParser('Download your spotify playlist through youtubedl')
-    parser.add_argument('--id', metavar='ID', help='Spotify client ID')
-    parser.add_argument('--secret', metavar='Client', help='Spotify client secret')
+    parser.add_argument('--id', help='Spotify client ID')
+    parser.add_argument('--secret', help='Spotify client secret')
     parser.add_argument('-c', action='store_true',
                         help='If you want to pass the username and playlist ID using command line use this')
-    parser.add_argument('--username', metavar='Username', help='Username of the authors playlist')
-    parser.add_argument('--playlist_uri', metavar='PlaylistURI', help='URI of the playlist')
+    parser.add_argument('--username', help='Username of the authors playlist')
+    parser.add_argument('--playlist_uri', help='URI of the playlist')
+    parser.add_argument('--dir', help='Save destination directory')
     return parser.parse_args()
 
 
@@ -44,11 +50,6 @@ def get_track_names(S, username, playlist_id):
     return song_names
 
 
-def download_song(song):
-    command = 'youtube-dl -x --audio-format mp3 -o "~/Desktop/Summer Tunes 2020/%(title)s.%(ext)s" "ytsearch1:{} - {}"'.format(song[0], song[1])
-    os.system(command)
-
-
 if __name__ == '__main__':
     args = get_args()
     token = generate_token(args.id, args.secret)
@@ -56,12 +57,12 @@ if __name__ == '__main__':
     spotify = spotipy.Spotify(auth=token)
 
     songs = None
-    if args.c is True:
-        songs = get_track_names(spotify, args.username, args.playlist_uri)
-    else:
-        username = input('Spotify Username')
-        playlist_uri = input('Spotify playlist URI')
-        songs = get_track_names(spotify, username, playlist_uri)
+    if args.c is False:
+        args.username = input('Spotify Username (e.g. johndoe123):\n')
+        args.playlist_uri = input('Spotify playlist URI (e.g. spotify:playlist:xxxxxxxxxxxxxxxxxxxxxx):\n')
+        args.dir = input('Save directory (e.g. ~/Desktop/Summer Tunes 2020):\n')
 
+    songs = get_track_names(spotify, args.username, args.playlist_uri)
+    dl = Downloader(args.dir)
     pool = multiprocessing.Pool(5)
-    pool.map(download_song, songs)
+    pool.map(dl.download_song, songs)
